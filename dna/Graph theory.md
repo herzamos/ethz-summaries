@@ -12,8 +12,8 @@
 - **Path**: walk without repeated vertices
 - **Closed walk**: walk where v~0~ = v~n~
 - **Cycle**: closed walk without repeating vertices
-- **Euler path**: visit each edge once
-- **Hamilton path**: visit each vertex once
+- **Euler path**: visit each edge exactly once
+- **Hamilton path**: visit each vertex exactly once
 - **Directed graph**: edges are ordered pairs
 - **Ancestor**: v, **Successor**: u  in 
 
@@ -30,10 +30,9 @@ graph LR
 
 ## Graph Representation
 
-### Adjacency matrix
+### Adjacency matrix:
 
 matrix where $A_{uv} = \begin{cases} 1 & \text{if} (u,v) \in E \\ 0 & \text{otherwise} \end{cases}$
-
 **Graph:**
 
 ```mermaid
@@ -58,9 +57,7 @@ $$
   ### Adjacency list
 
 Array of linked lists, where Adj[u] contains a list containing all the neighbors of u.
-
 **Graph:** Same as above
-
 **List:**
 
 ```mermaid
@@ -74,13 +71,14 @@ graph TB
 
 ### Runtimes
 
-|                                  | Matrix             | List                        |
-| -------------------------------- | ------------------ | --------------------------- |
-| Find all neighbors $v$           | $\mathcal{O}(n)$   | $\mathcal{O}(deg_{out}(v))$ |
-| Find $v \in V$ without neighbors | $\mathcal{O}(n^2)$ | $\mathcal{O}(n)$            |
-| Check if $(v,u) \in E$           | $\mathcal{O}(1)$   | $\mathcal{O}(deg_{out}(v))$ |
-| Insert edge                      | $\mathcal{O}(1)$   | $\mathcal{O}(1)$            |
-| Remove edge $v$                  | $\mathcal{O}(1)$   | $\mathcal{O}(deg_{out}(v))$ |
+|                                              | Matrix                   | List                                               |
+| -------------------------------------------- | ------------------------ | -------------------------------------------------- |
+| Find all neighbors of $v$                    | $\mathcal{O}(n)$         | $\mathcal{O}(deg_{out}(v))$                        |
+| Find $v \in V$ without neighbors             | $\mathcal{O}(n^2)$       | $\mathcal{O}(n)$                                   |
+| Check if $(v,u) \in E$                       | $\mathcal{O}(1)$         | $\mathcal{O}(1 + min(deg_{out}(v), deg_{out}(u)))$ |
+| Insert edge                                  | $\mathcal{O}(1)$         | $\mathcal{O}(1)$                                   |
+| Remove edge $v$                              | $\mathcal{O}(1)$         | $\mathcal{O}(deg_{out}(v))$                        |
+| Check whether an Eulerian path exists or not | $\mathcal{O}(|V| * |E|)$ | $\mathcal{O}(|V| + |E|)$                           |
 
  ## Algorithms
 
@@ -184,3 +182,60 @@ graph LR
 | $pre(u) < pre(v)$ and $post(u) < post(v)$                    | Not possible                                                |
 
 **Remark:** $\nexists$ back edge $\Leftrightarrow$ $\nexists$ closed walk (cycle)
+
+### Breadth-First Search (BFS)
+
+Instead of searching through the depth of a graph, one can also go first through all the successor of the root with the BFS algorithm.
+
+#### Pseudocode
+
+```pseudocode
+BFS(G):
+	for (v in V not marked):
+		DFS-Visit(v)
+```
+
+
+
+```pseudocode
+DFS-VIsit(v):
+	Q = new Queue()
+	active[v] = true //used to check whether a vertex is in the queue or not
+	enqueue(v, Q)
+	while (!isEmpty(Q)):
+		w = dequeue(Q)
+		visited[W] = true
+		for ((w, x) in E):
+			if(!active[x] && !visited[x]):
+				active[x] = true
+				enqueue(x, Q)
+```
+
+#### Runtime
+
+| Operations | $T(n) \in \Theta(|E| + |V|)$ |
+| ---------- | ---------------------------- |
+| **Memory** | $T(n) \in \Theta(|V|)$       |
+
+### Find shortest path in DAG (Directed Acyclic Graph) 
+
+We can compute a recurrence following the topological sorting of the graph.
+
+#### Psudocode
+
+```pseudocode
+ShortestPath(V):
+	d[s] = 0, d[v] = inf
+	for (v in V \ {s}, following topological sorting):
+		for (u, v, s.t. (u, v) in E):
+			d[v] = min(d[u] + c(u,v)) 
+```
+
+#### Runtime 
+
+$T(n) \in \mathcal{O}((|E| * |V|)*log(|V|))$
+
+### Djikstra 
+
+Used to find the shortest (cheapest) path between two nodes in a graph. 
+**Remark:** The graph must **not** have negative weights
