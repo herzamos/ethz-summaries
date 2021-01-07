@@ -116,40 +116,19 @@ DFS-Visit(v):
 
 ```mermaid
 graph LR
-	subgraph 1/16
-	A((A))
-	end
-	subgraph 2/11
-	B((B))
-	end
-	subgraph 12/15
-	C((C))
-	end
-	subgraph 13/14
-	D
-	end
-	subgraph 3/10
-	E
-	end
-	subgraph 4/7
-	F
-	end
-	subgraph 5/6
-	G
-	end
-	subgraph 8/9
-	H
-	end
-	A --> B((B))
-	A --> C((C))
-	A --> F((F))
-	B --> E((E))
-	C --> D((D))
+	A((1/16 <br> A))
+	B((2/11 <br> B))
+	C((12/15 <br> C))
+	A --> B
+	A --> C
+	A --> F((4/7 <br> F))
+	B --> E((3/10 <br> E))
+	C --> D((13/14 <br> D))
 	D --> A
 	D -->H
 	E --> F
-	E --> G((G))
-	E --> H((H))
+	E --> G((5/6 <br> G))
+	E --> H((8/9 <br> H))
 	F --> B
 	F --> G
 	H --> G
@@ -221,7 +200,7 @@ DFS-VIsit(v):
 
 We can compute a recurrence following the topological sorting of the graph.
 
-#### Psudocode
+#### Pseudocode
 
 ```pseudocode
 ShortestPath(V):
@@ -233,9 +212,62 @@ ShortestPath(V):
 
 #### Runtime 
 
-$T(n) \in \mathcal{O}((|E| * |V|)*log(|V|))$
+$T(n) \in \mathcal{O}(|E| * |V|)$ if adjacency list is given
 
 ### Djikstra 
 
 Used to find the shortest (cheapest) path between two nodes in a graph. 
 **Remark:** The graph must **not** have negative weights
+
+#### Pseudocode
+
+```pseudocode
+DijkstraG, s):
+	for (v in V):
+		distance[v] = infinity
+		parent[v] = null
+	distance[s] = 0
+	Q = new Queue()
+	insert(s, 0, Q) // insert s into the queue Q, with priority 0 (min)
+	while(!isEmpty(Q)):
+		v* = Q.extractMin() // extract from Q the node with minimum distance
+		for ((v*, v) in E):
+			if (parent[v] == null):
+				distance[v] = distance[v*] + w(v*, v)
+				parent[v] = v*
+			else if (distance[v*] + w(v*, v) < distance[v]):
+				distance[v] = distance[v*] + w(v*, v)
+				parent[v] = v*
+				decreaseKey(v, distance[v], Q)
+```
+
+#### Runtime
+
+$T(n) \in \mathcal{O}((|E| * |V|)*log(|V|))$ if implemented with a Heap.
+If implemented with a **Fibonacci-Heap**: $T(n) \in \mathcal{O}((|E| + |V|*log(|V|))$)
+
+### Bellman-Ford
+
+Used for graph with general weight (**positive and negative!**)
+
+#### Pseudocode
+
+```pseudocode
+BellmanFord(G, s):
+	for (v in V):
+		distance[v] = infinity
+		parent[v] = null
+	distance[s] = 0
+	for (i = 1, 2, ..., |V| - 1):
+		for ((u, v) in E):
+			if(distance[v] > distance[u] + w(u, v)):
+				distance[v] = distance[u] + w(u, v)
+				parent[v] = u
+	for ((u, v) in E):
+		if (distance[u] + w(u, v) < distance [v]):
+			return "negative cyrcle!"
+```
+
+#### Runtime
+
+$T(n) \in \mathcal{O}(|E| * |V|)$
