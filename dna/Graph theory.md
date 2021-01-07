@@ -228,8 +228,8 @@ DijkstraG, s):
 		parent[v] = null
 	distance[s] = 0
 	Q = new Queue()
-	insert(s, 0, Q) // insert s into the queue Q, with priority 0 (min)
-	while(!isEmpty(Q)):
+	insert(Q, s, 0) // insert s into the queue Q, with priority 0 (min)
+	while(!Q.isEmpty()):
 		v* = Q.extractMin() // extract from Q the node with minimum distance
 		for ((v*, v) in E):
 			if (parent[v] == null):
@@ -238,12 +238,12 @@ DijkstraG, s):
 			else if (distance[v*] + w(v*, v) < distance[v]):
 				distance[v] = distance[v*] + w(v*, v)
 				parent[v] = v*
-				decreaseKey(v, distance[v], Q)
+				decreaseKey(Q, v, distance[v])
 ```
 
 #### Runtime
 
-$T(n) \in \mathcal{O}((|E| * |V|)*log(|V|))$ if implemented with a Heap.
+If implemented with a Heap: $T(n) \in \mathcal{O}((|E| + |V|)*log(|V|))$
 If implemented with a **Fibonacci-Heap**: $T(n) \in \mathcal{O}((|E| + |V|*log(|V|))$)
 
 ### Bellman-Ford
@@ -271,3 +271,134 @@ BellmanFord(G, s):
 #### Runtime
 
 $T(n) \in \mathcal{O}(|E| * |V|)$
+
+### Boruvka
+
+Used to find a MST in a given graph G
+
+#### Minimum Spanning Trees (MSTs)
+
+A minimum spanning tree is a subgraph $H = (V, E^*)$ of a graph $G = (V, E)$ with $E^* \subseteq E$, such that every vertex $v \in V$ is connected and that **the sum of all edges' weight is minimal**.
+
+#### Pseudocode
+
+```pseudocode
+Boruvka(G):
+	F = new Set() // Initialize a new forest with every vertex being a tree and 0 edges
+	while (F not SpanningTree): // check that ZHKs of F > 1
+		ZHKs of F = (S1, ..., Sk)
+		minEdges of S1, ..., Sk = (e1, ..., ek)
+		F = F U (e1, ..., ek)
+	return F
+```
+
+First choose the minimal edge for every vertex and add them to the new graph. Then repeat for every ZHK (vertices connected with edges) until you have a MST (until there is only 1 ZHK).
+
+#### Runtime 
+
+$T(n) \in \mathcal{O}((|E| + |V|) * log(|V|))$
+
+#### Example
+
+```mermaid
+graph LR
+	subgraph iii.
+	AAA((A)) === |1| BBB((B))
+	AAA === |4| CCC((C))
+	BBB === |3| DDD((D))
+	CCC --- |6| DDD
+	CCC === |2| EEE((E))
+	DDD --- |5| EEE((E))
+	end
+	subgraph ii.
+	AA((A)) === |1| BB((B))
+	AA --- |4| CC((C))
+	BB === |3| DD((D))
+	CC --- |6| DD
+	CC === |2| EE((E))
+	DD --- |5| EE((E))
+	end
+	subgraph i.
+	A((A)) --- |1| B((B))
+	A --- |4| C((C))
+	B --- |3| D((D))
+	C --- |6| D
+	C --- |2| E((E))
+	D --- |5| E((E))
+	end
+```
+
+### Prim
+
+Alternative to Kruskal, it needs a starting vertex as input.
+
+#### Pseudocode
+
+```pseudocode
+Prim(G, s):
+	MST = new Set()
+	H = new Heap(V, infinity)
+	for (v in V):
+		d[v] = infinity
+	d[s] = 0
+	decreaseKey(H, s, 0)
+	while (!H.isEmpty()):
+		v = extractMin(H)
+		MST.add(v)
+		for ((v, u) in E && v != s)
+			d[v] = min(d[v], w(v, u))
+			decreaseKey(H, v, d[v])
+```
+
+Add the minimal edge adjacent to s. Then take the newly created ZHK and add to it its minimal outgoing edge. Proceed like that until you have a spanning tree (all the vertices are connected).
+
+#### Runtime
+
+$T(n) \in \mathcal{O}((|E| + |V|) * log(|V|))$
+
+#### Example
+
+```mermaid
+graph LR
+	subgraph v.
+	AAAAA((A)) === |1| BBBBB((B))
+	AAAAA === |4| CCCCC((C))
+	BBBBB === |3| DDDDD((D))
+	CCCCC --- |6| DDDDD
+	CCCCC === |2| EEEEE((E))
+	DDDDD --- |5| EEEEE((E))
+	end
+	subgraph iv.
+	AAAA((A)) === |1| BBBB((B))
+	AAAA === |4| CCCC((C))
+	BBBB === |3| DDDD((D))
+	CCCC --- |6| DDDD
+	CCCC --- |2| EEEE((E))
+	DDDD --- |5| EEEE((E))
+	end
+	subgraph iii.
+	AAA((A)) === |1| BBB((B))
+	AAA --- |4| CCC((C))
+	BBB === |3| DDD((D))
+	CCC --- |6| DDD
+	CCC --- |2| EEE((E))
+	DDD --- |5| EEE((E))
+	end
+	subgraph ii.
+	AA((A)) === |1| BB((B))
+	AA --- |4| CC((C))
+	BB --- |3| DD((D))
+	CC --- |6| DD
+	CC --- |2| EE((E))
+	DD --- |5| EE((E))
+	end
+	subgraph i.
+	A((A)) --- |1| B((B))
+	A --- |4| C((C))
+	B --- |3| D((D))
+	C --- |6| D
+	C --- |2| E((E))
+	D --- |5| E((E))
+	end
+```
+
