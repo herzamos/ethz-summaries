@@ -69,6 +69,49 @@ D ---> C ---> B ---> A ---> Z
 
 ###  Methods
 
+- `insert(x, p, P)`: Insert `x`with priority `p`into the queue `P`
+- `extractMax(P)`: Extracts the elements with maximal priority from the queue `P`
+
+### Structure
+
+**Max-Heap:**
+
+```mermaid
+graph TB
+	A["V1  <code>7</code>"] --> B["V2  <code>6</code>"] & C["V3  <code>5</code>"]
+	B --> D["V4  <code>4</code>"] & E["V5  <code>3</code>"]
+	C --> F["V6  <code>2</code>"] & G["V7  <code>1</code>"]
+```
+
+### Runtime
+
+- `insert(x, p, P)`: $\in \mathcal{O}(log(n))$
+- `extractMax(P)`: $\in \mathcal{O}(log(n))$
+
+## Dictionary 
+
+###  Methods
+
+- `search(x, W)`: Finds `w`in dictionary `W`
+- `insert(x, W)`: Insert `x`in dictionary `W`
+- `remove(x, W)`: Remove`x` from the dictionary `W`
+
+### Structure
+
+**Search Tree:**
+
+```mermaid
+graph TB
+	A["V1"] --> |< V1| B["V2"]
+	A --> |>V1| C["V3"]
+	B --> |< V2| D["V4"]
+	B --> |> V2| E["V5"]
+	C --> |< V3| F["V6"]
+	C --> |> V3| G["V7"]
+```
+
+
+
 # Graph theory
 
 ## Glossary
