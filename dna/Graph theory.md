@@ -1,5 +1,74 @@
 [TOC]
 
+# Abstract Data Types (ADTs)
+
+## Stack
+
+### Methods
+
+- `push(x, S)`: Puts `x`onto the stack `S`
+- `pop(S)`: Remove (and returns) the top element of the stack `S`
+- `top(S)`: Returns the top element of the stack `S`
+
+### Visualization
+
+```mermaid
+graph LR
+	X[X] ---> |push| A[(Stack)]
+	A --> |pop| Y
+	
+```
+
+### Structure
+
+**Linked List:**
+
+```mermaid
+graph LR
+	A["<code>top</code><br>A"] ---> B["B"] ---> C[C] ---> D["D"] ---> E[<code>null</code>]
+	
+```
+
+### Runtime
+
+- `push(x, S)`$\in \mathcal{O}(1)$
+- `pop(S)`$\in \mathcal{O}(1)$
+- `top(S)`$\in \mathcal{O}(1)$
+
+## Queue
+
+### Methods
+
+- `enqueue(x, S)`: Add `x`to the queue `S`
+- `dequeue(S)`: Remove the first element of the queue `S`
+
+### Visualization
+
+```mermaid
+graph LR
+	X[X] --> |enqueue| A["&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;"] -->|dequeue| Y[Y]
+```
+
+### Structure
+
+**Doubly Linked List:**
+
+```mermaid
+graph LR
+Z[<code>null</code>]
+A["<code>first</code><br>A"] ---> B["B"] ---> C[C] ---> D["<code>last</code><br>D"] ---> E[<code>null</code>]
+D ---> C ---> B ---> A ---> Z
+```
+
+### Runtime
+
+- `enqueue(x, S)`: $\in \mathcal{O}(1)$
+- `dequeue(S)`: $\in \mathcal{O}(1)$
+
+## Priority Queue
+
+###  Methods
+
 # Graph theory
 
 ## Glossary
@@ -151,14 +220,14 @@ graph LR
 	E --> |forward| G
 ```
 
-| Pre and post number                                          | Name of the edge $(v, u) \in E$                             |
-| ------------------------------------------------------------ | ----------------------------------------------------------- |
-| $pre(u) < pre(v)$ and $post(u) < post(v)$                    | Not possible                                                |
-| $pre(u) < pre(v)$ and $post(u) > post(v)$                    | **forward** or simply no name, since it is part of the tree |
-| $pre(u) < pre(w)$ and $post(u) < post(v)$ but $(u,v) \notin E$ | **forward edge**                                            |
-| $pre(u) > pre(v)$ and $post(u) > post(v)$                    | **back edge**                                               |
-| $pre(u) > pre(v)$ and $post(u) > post(v)$                    | **cross edge**                                              |
-| $pre(u) < pre(v)$ and $post(u) < post(v)$                    | Not possible                                                |
+| Pre and post number                                          | Name of the edge $(v, u) \in E$ |
+| ------------------------------------------------------------ | ------------------------------- |
+| $pre(u) < pre(v)$ and $post(u) < post(v)$                    | Not possible                    |
+| $pre(u) < pre(v)$ and $post(u) > post(v)$                    | **Tree edge**                   |
+| $pre(u) < pre(w)$ and $post(u) < post(v)$ but $(u,v) \notin E$ | **Forward edge**                |
+| $pre(u) > pre(v)$ and $post(u) > post(v)$                    | **Back edge**                   |
+| $pre(u) > pre(v)$ and $post(u) > post(v)$                    | **Cross edge**                  |
+| $pre(u) < pre(v)$ and $post(u) < post(v)$                    | Not possible                    |
 
 **Remark:** $\nexists$ back edge $\Leftrightarrow$ $\nexists$ closed walk (cycle)
 
