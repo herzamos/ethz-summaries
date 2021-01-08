@@ -90,13 +90,13 @@ Used mainly to check whether a Graph can be topological sorted or not ($\Leftrig
 
 ```pseudocode
 DFS(G):
+	t = 1
 	for (v in V not marked):
 		DFS-Visit(v)
 ```
 
 ```pseudocode
 DFS-Visit(v):
-	t = 0
 	pre[v] = t++
 	marked[v] = true
 	for ((u, v) in E not marked)
@@ -171,13 +171,13 @@ Instead of searching through the depth of a graph, one can also go first through
 ```pseudocode
 BFS(G):
 	for (v in V not marked):
-		DFS-Visit(v)
+		BFS-Visit(v)
 ```
 
 
 
 ```pseudocode
-DFS-VIsit(v):
+BFS-VIsit(v):
 	Q = new Queue()
 	active[v] = true //used to check whether a vertex is in the queue or not
 	enqueue(v, Q)
@@ -505,4 +505,52 @@ FloydWarshall(G):
 $T(n) \in \mathcal{O}(|V|^3)$
 
 ### Johnson
+
+Used to solve the all-pair shortest path problem. First one has to make every weight positive, by adding an "external" vertex, and then proceed by using Dijkstra $|V|$ times.
+
+#### Example
+
+```mermaid
+graph LR
+	A((A)) --> |-2| B((B))
+	A --> |-0.5| C((C))
+	B --> |1| C
+```
+
+- First, add the new vertex, and connect it to every other vertex with weight $0$.
+  $h(n)$ is the "height" of the node $n$, equals to **the shortest path from $N$ to $n$** , found by applying $n$ times Dijkstra.
+
+  ```mermaid
+  graph LR
+  	A(("A <br> h(a) = 0")) --> |-2| B(("B <br> h(b) = -2"))
+  	A --> |-0.5| C(("C <br> h(c) = -1"))
+  	B --> |1| C
+  	N((N)) ----> |0| A & B & C
+  ```
+
+- We now can modify each weight $w(u, v)$ of each edge into a new weight $w^*(u, v) = w(u, v) + (h(u) - h())$
+
+```mermaid
+graph LR
+	A(("A")) --> |0| B(("B"))
+	A --> |0.5| C(("C"))
+	B --> |0| C
+	N((N)) ----> |0| A & B & C
+```
+
+#### Runtime
+
+- Create new node and add new edges: $\mathcal{O}(|V|)$
+- Assign h-values: Bellman-Ford, $\mathcal{O}(|V|*|E|$
+- $|V|$ times Dijkstra: $\mathcal{O}(|V|*|E| + |V|^2*log(|V|))$
+
+### All Pair-Shortest Path
+
+All the algorithms we know to solve the APSP problem can be compared in the following way (**top**: less general, **bottom**: more general):
+
+| Graph                                                | Algorithm                                                | Runtime                                                      |
+| ---------------------------------------------------- | -------------------------------------------------------- | ------------------------------------------------------------ |
+| $G = (V, E)$                                         | $|V| * BFS$                                              | $\mathcal{O}(|V|*|E| + |V|^2)$                               |
+| $G = (V, E, w)$<br />$w: E \rightarrow \mathbb{R}^+$ | $|V|* Dijkstra$                                          | $\mathcal{O}(|V| * |E| + |V|^2*log(|V|))$                    |
+| $G = (V, E, w)$<br />$w: E \rightarrow \mathbb{R}$   | $|V|* Bellman-Ford$<br />$Floyd-Warshall$<br />$Johnson$ | $\mathcal{O}(|V|*|E|)$<br />$\mathcal{O}(|V|^3)$<br />$\mathcal{O}(|V|*|E| + |V|^2*log(|V|))$ |
 
