@@ -63,10 +63,10 @@ Array of linked lists, where Adj[u] contains a list containing all the neighbors
 ```mermaid
 graph TB
 1 & 2 & 3 & 4
-1 --> A[2] --> B[3]
-2 --> C[1] --> D[3] --> E[4]
-3 --> AA[1] --> BB[2] --> CC[4]
-4 --> AAA[2] --> BBB[3]
+1 --> A[2] --> B[3] --> Z[4]
+2 --> C[1] --> E[4]
+3 --> AA[1] --> CC[4]
+4 --> W[1] --> AAA[2] --> BBB[3]
 ```
 
 ### Runtimes
