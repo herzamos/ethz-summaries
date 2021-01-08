@@ -292,13 +292,13 @@ Boruvka(G):
 	return F
 ```
 
-First choose the minimal edge for every vertex and add them to the new graph. Then repeat for every ZHK (vertices connected with edges) until you have a MST (until there is only 1 ZHK).
-
 #### Runtime 
 
 $T(n) \in \mathcal{O}((|E| + |V|) * log(|V|))$
 
 #### Example
+
+First choose the minimal edge for every vertex and add them to the new graph. Then repeat for every ZHK (vertices connected with edges) until you have a MST (until there is only 1 ZHK).
 
 ```mermaid
 graph LR
@@ -350,13 +350,13 @@ Prim(G, s):
 			decreaseKey(H, v, d[v])
 ```
 
-Add the minimal edge adjacent to s. Then take the newly created ZHK and add to it its minimal outgoing edge. Proceed like that until you have a spanning tree (all the vertices are connected).
-
 #### Runtime
 
 $T(n) \in \mathcal{O}((|E| + |V|) * log(|V|))$
 
 #### Example
+
+Add the minimal edge adjacent to s. Then take the newly created ZHK and add to it its minimal outgoing edge. Proceed like that until you have a spanning tree (all the vertices are connected).
 
 ```mermaid
 graph LR
@@ -401,4 +401,108 @@ graph LR
 	D --- |5| E((E))
 	end
 ```
+
+### Kruskal
+
+Another algorithm to find a MST in a given graph. It sorts edges by weight and adds them one by one, **unless adding an edge would form a cycle**.
+
+#### Pseudocode
+
+```pseudocode
+Kruskal(G):
+	MST = new Set()
+	E.sort() // sort all edges by weight
+	for ((u, v) in E):
+		if (u and v in 2 different ZHKs of MST):
+			MST.add(e)
+```
+
+#### Runtime
+
+If implemented normally: $T(n) \in \mathcal{O}(|E| * |V| + |E| * log(|E|))$ (second part to sort)
+If implemented with an improved union-find DS: $T(n) \in \mathcal{O}(|V| * log(|V|) + |E| * log(|E|))$ (second part to sort)
+
+#### Example
+
+Add edges one by one following weight-order. If adding an edge would form a cycle, skip it.
+
+```mermaid
+graph LR
+	subgraph v.
+	AAAAA((A)) === |1| BBBBB((B))
+	AAAAA === |4| CCCCC((C))
+	BBBBB === |3| DDDDD((D))
+	CCCCC --- |6| DDDDD
+	CCCCC === |2| EEEEE((E))
+	DDDDD --- |5| EEEEE((E))
+	end
+	subgraph iv.
+	AAAA((A)) === |1| BBBB((B))
+	AAAA --- |4| CCCC((C))
+	BBBB === |3| DDDD((D))
+	CCCC --- |6| DDDD
+	CCCC === |2| EEEE((E))
+	DDDD --- |5| EEEE((E))
+	end
+	subgraph iii.
+	AAA((A)) === |1| BBB((B))
+	AAA --- |4| CCC((C))
+	BBB --- |3| DDD((D))
+	CCC --- |6| DDD
+	CCC === |2| EEE((E))
+	DDD --- |5| EEE((E))
+	end
+	subgraph ii.
+	AA((A)) === |1| BB((B))
+	AA --- |4| CC((C))
+	BB --- |3| DD((D))
+	CC --- |6| DD
+	CC --- |2| EE((E))
+	DD --- |5| EE((E))
+	end
+	subgraph i.
+	A((A)) --- |1| B((B))
+	A --- |4| C((C))
+	B --- |3| D((D))
+	C --- |6| D
+	C --- |2| E((E))
+	D --- |5| E((E))
+	end
+```
+
+### Floyd-Warshall
+
+Used to solve the **all-pair shortest path** problem, i.e., to find the shortest distance between **any** two vertices of a given graph $G$.
+It makes use of a 3-Dimensional DP table.
+
+#### Pseudocode
+
+`d[i][u][v]` represents the shortest path from $u$ to $v$ passing through $\leq i$ vertices.
+
+```pseudocode
+FloydWarshall(G):
+	for (v in V):
+		d[0][v][v] = 0 // layer 0, row v, column v
+	for ((v, u) in E):
+		d[0][v][u] = w(v, u)
+	else: // if u, v isn't in E
+		d[0][v][u] = infinity
+	for (i = 1, ..., |V|):
+		for (u = 1, ..., |V|):
+			for (v = 1, ..., |V|):
+				d[i][u][v] = min(d[i-1][u][v], d[i-1][u][i] + d[i-1][i][v])
+	return d
+```
+
+**Remarks:** 
+
+- This algorithm can be implemented **inplace**, it just suffice to leave the indices away.
+
+- The algorithm does **not** work if negative cycles are present.
+
+#### Runtime
+
+$T(n) \in \mathcal{O}(|V|^3)$
+
+### Johnson
 
