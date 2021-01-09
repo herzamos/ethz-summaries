@@ -385,11 +385,11 @@ This graph generate the following tree (rotated of 90 degree to save space):
 
 ```mermaid
 graph LR
-	A((A)) --> B((B)) & C((C))
-	B --> E((E))
-	C --> D((D))
-	E --> F((F)) & H((H))
-	F --> G((G))
+	A((A)) ==> B((B)) & C((C))
+	B ==> E((E))
+	C ==> D((D))
+	E ==> F((F)) & H((H))
+	F ==> G((G))
 	D --> |back| A
 	F ----> |back| B
 	A ----> |forward| F
