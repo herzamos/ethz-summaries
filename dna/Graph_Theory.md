@@ -77,7 +77,7 @@ graph TB
 | Find $v \in V$ without neighbors             | $\mathcal{O}(n^2)$       | $\mathcal{O}(n)$                |
 | Check if $(v,u) \in E$                       | $\mathcal{O}(1)$         | $\mathcal{O}(1 + deg_{out}(v))$ |
 | Insert edge                                  | $\mathcal{O}(1)$         | $\mathcal{O}(1)$                |
-| Remove vertex $v$                            | $\mathcal{O}(1)$         | $\mathcal{O}(deg_{out}(v))$     |
+| Remove edge $(v, u)$                         | $\mathcal{O}(1)$         | $\mathcal{O}(deg_{out}(v))$     |
 | Check whether an Eulerian path exists or not | $\mathcal{O}(|V| * |E|)$ | $\mathcal{O}(|V| + |E|)$        |
 
  ## Algorithms
