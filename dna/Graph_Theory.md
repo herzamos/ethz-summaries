@@ -71,14 +71,14 @@ graph TB
 
 ### Runtimes
 
-|                                              | Matrix                   | List                                               |
-| -------------------------------------------- | ------------------------ | -------------------------------------------------- |
-| Find all neighbors of $v$                    | $\mathcal{O}(n)$         | $\mathcal{O}(deg_{out}(v))$                        |
-| Find $v \in V$ without neighbors             | $\mathcal{O}(n^2)$       | $\mathcal{O}(n)$                                   |
-| Check if $(v,u) \in E$                       | $\mathcal{O}(1)$         | $\mathcal{O}(1 + min(deg_{out}(v), deg_{out}(u)))$ |
-| Insert edge                                  | $\mathcal{O}(1)$         | $\mathcal{O}(1)$                                   |
-| Remove edge $v$                              | $\mathcal{O}(1)$         | $\mathcal{O}(deg_{out}(v))$                        |
-| Check whether an Eulerian path exists or not | $\mathcal{O}(|V| * |E|)$ | $\mathcal{O}(|V| + |E|)$                           |
+|                                              | Matrix                   | List                            |
+| -------------------------------------------- | ------------------------ | ------------------------------- |
+| Find all neighbors of $v$                    | $\mathcal{O}(n)$         | $\mathcal{O}(deg_{out}(v))$     |
+| Find $v \in V$ without neighbors             | $\mathcal{O}(n^2)$       | $\mathcal{O}(n)$                |
+| Check if $(v,u) \in E$                       | $\mathcal{O}(1)$         | $\mathcal{O}(1 + deg_{out}(v))$ |
+| Insert edge                                  | $\mathcal{O}(1)$         | $\mathcal{O}(1)$                |
+| Remove vertex $v$                            | $\mathcal{O}(1)$         | $\mathcal{O}(deg_{out}(v))$     |
+| Check whether an Eulerian path exists or not | $\mathcal{O}(|V| * |E|)$ | $\mathcal{O}(|V| + |E|)$        |
 
  ## Algorithms
 
@@ -99,9 +99,9 @@ DFS(G):
 DFS-Visit(v):
 	pre[v] = t++
 	marked[v] = true
-	for ((u, v) in E not marked)
+	for ((v, u) in E, u not marked)
 		DFS_Visit(u)
-	post[u] = t++
+	post[v] = t++
 ```
 
 #### Runtime
@@ -155,7 +155,7 @@ graph LR
 | ------------------------------------------------------------ | ------------------------------- |
 | $pre(u) < pre(v)$ and $post(u) < post(v)$                    | Not possible                    |
 | $pre(u) < pre(v)$ and $post(u) > post(v)$                    | **Tree edge**                   |
-| $pre(u) < pre(w)$ and $post(u) < post(v)$ but $(u,v) \notin E$ | **Forward edge**                |
+| $pre(u) < pre(v)$ and $post(u) < post(v)$ but $(u,v) \notin E$ | **Forward edge**                |
 | $pre(u) > pre(v)$ and $post(u) > post(v)$                    | **Back edge**                   |
 | $pre(u) > pre(v)$ and $post(u) > post(v)$                    | **Cross edge**                  |
 | $pre(u) < pre(v)$ and $post(u) < post(v)$                    | Not possible                    |
@@ -183,7 +183,7 @@ BFS-VIsit(v):
 	enqueue(v, Q)
 	while (!isEmpty(Q)):
 		w = dequeue(Q)
-		visited[W] = true
+		visited[w] = true
 		for ((w, x) in E):
 			if(!active[x] && !visited[x]):
 				active[x] = true
@@ -203,11 +203,11 @@ We can compute a recurrence following the topological sorting of the graph.
 #### Pseudocode
 
 ```pseudocode
-ShortestPath(V):
+ShortestPath(G, s):
 	d[s] = 0, d[v] = inf
 	for (v in V \ {s}, following topological sorting):
-		for (u, v, s.t. (u, v) in E):
-			d[v] = min(d[u] + c(u,v)) 
+		for ((u, v) in E):
+			d[v] = min(d[v], d[u] + c(u,v)) 
 ```
 
 #### Runtime 
@@ -222,19 +222,19 @@ Used to find the shortest (cheapest) path between two nodes in a graph.
 #### Pseudocode
 
 ```pseudocode
-DijkstraG, s):
+Dijkstra(G, s):
 	for (v in V):
 		d[v] = infinity
 		parent[v] = null
 		insert(Q, v, d[v])
 	d[s] = 0
 	Q = new Queue()
-	decreaseKey(Q, s, 0) // insert s into the queue Q, with priority 0 (min)
+	decreaseKey(Q, s, 0) // decrease the priority of s to 0 (min)
 	while(!Q.isEmpty()):
-		v* = Q.extractMin() // extract from Q the node with minimum distance
+		v* = Q.extractMin() // extract from Q the node with minimum priority
 		for ((v*, v) in E):
-			dist = d[v] = d[v*] + w(v*, v)
-			if (d[v*] + w(v*, v) < d[v]):
+			dist = d[v*] + w(v*, v)
+			if (dist < d[v]):
 				d[v] = dist
 				parent[v] = v*
 				decreaseKey(Q, v, d[v])
@@ -263,7 +263,7 @@ BellmanFord(G, s):
 				distance[v] = distance[u] + w(u, v)
 				parent[v] = u
 	for ((u, v) in E):
-		if (distance[u] + w(u, v) < distance [v]):
+		if (distance[u] + w(u, v) < distance[v]):
 			return "negative cyrcle!"
 ```
 
@@ -284,7 +284,7 @@ A minimum spanning tree is a subgraph $H = (V, E^*)$ of a graph $G = (V, E)$ wit
 ```pseudocode
 Boruvka(G):
 	F = new Set() // Initialize a new forest with every vertex being a tree and 0 edges
-	while (F not SpanningTree): // check that ZHKs of F > 1
+	while (F not SpanningTree): // check that ZHKs of F > 1 or number of edges < |V| - 1
 		ZHKs of F = (S1, ..., Sk)
 		minEdges of S1, ..., Sk = (e1, ..., ek)
 		F = F U (e1, ..., ek)
@@ -336,17 +336,13 @@ Alternative to Kruskal, it needs a starting vertex as input.
 ```pseudocode
 Prim(G, s):
 	MST = new Set()
-	H = new Heap(V, infinity)
-	for (v in V):
-		d[v] = infinity
-	d[s] = 0
+	H = new minHeap(V, infinity)
 	decreaseKey(H, s, 0)
 	while (!H.isEmpty()):
 		v = extractMin(H)
 		MST.add(v)
-		for ((v, u) in E && v != s)
-			d[v] = min(d[v], w(v, u))
-			decreaseKey(H, v, d[v])
+		for ((v, u) in E && u not in MST)
+			decreaseKey(H, u, w(v, u))
 ```
 
 #### Runtime
@@ -413,7 +409,7 @@ Kruskal(G):
 	E.sort() // sort all edges by weight
 	for ((u, v) in E):
 		if (u and v in 2 different ZHKs of MST):
-			MST.add(e)
+			MST.add((u, v))
 ```
 
 #### Runtime
@@ -527,7 +523,7 @@ graph LR
   	N((N)) ----> |0| A & B & C
   ```
 
-- We now can modify each weight $w(u, v)$ of each edge into a new weight $w^*(u, v) = w(u, v) + (h(u) - h())$
+- We now can modify each weight $w(u, v)$ of each edge into a new weight $w^*(u, v) = w(u, v) + (h(u) - h(v))$
 
 ```mermaid
 graph LR
@@ -540,7 +536,7 @@ graph LR
 #### Runtime
 
 - Create new node and add new edges: $\mathcal{O}(|V|)$
-- Assign h-values: Bellman-Ford, $\mathcal{O}(|V|*|E|$
+- Assign h-values: Bellman-Ford, $\mathcal{O}(|V|*|E|)$
 - $|V|$ times Dijkstra: $\mathcal{O}(|V|*|E| + |V|^2*log(|V|))$
 
 ### All Pair-Shortest Path
@@ -551,5 +547,5 @@ All the algorithms we know to solve the APSP problem can be compared in the foll
 | ---------------------------------------------------- | -------------------------------------------------------- | ------------------------------------------------------------ |
 | $G = (V, E)$                                         | $|V| * BFS$                                              | $\mathcal{O}(|V|*|E| + |V|^2)$                               |
 | $G = (V, E, w)$<br />$w: E \rightarrow \mathbb{R}^+$ | $|V|* Dijkstra$                                          | $\mathcal{O}(|V| * |E| + |V|^2*log(|V|))$                    |
-| $G = (V, E, w)$<br />$w: E \rightarrow \mathbb{R}$   | $|V|* Bellman-Ford$<br />$Floyd-Warshall$<br />$Johnson$ | $\mathcal{O}(|V|*|E|)$<br />$\mathcal{O}(|V|^3)$<br />$\mathcal{O}(|V|*|E| + |V|^2*log(|V|))$ |
+| $G = (V, E, w)$<br />$w: E \rightarrow \mathbb{R}$   | $|V|* Bellman-Ford$<br />$Floyd-Warshall$<br />$Johnson$ | $\mathcal{O}(|V|^2*|E|)$<br />$\mathcal{O}(|V|^3)$<br />$\mathcal{O}(|V|*|E| + |V|^2*log(|V|))$ |
 
