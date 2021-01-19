@@ -151,14 +151,20 @@ graph LR
 	E --> |forward| G
 ```
 
-| Pre and post number                                          | Name of the edge $(v, u) \in E$ |
-| ------------------------------------------------------------ | ------------------------------- |
-| $pre(u) < pre(v)$ and $post(u) < post(v)$                    | Not possible                    |
-| $pre(u) < pre(v)$ and $post(u) > post(v)$                    | **Tree edge**                   |
-| $pre(u) < pre(v)$ and $post(u) < post(v)$ but $(u,v) \notin E$ | **Forward edge**                |
-| $pre(u) > pre(v)$ and $post(u) > post(v)$                    | **Back edge**                   |
-| $pre(u) > pre(v)$ and $post(u) > post(v)$                    | **Cross edge**                  |
-| $pre(u) < pre(v)$ and $post(u) < post(v)$                    | Not possible                    |
+| Pre- and post order considering the edge $(u, v)$     | Corresponding edge $(u, v) \in E$                            |
+| ----------------------------------------------------- | ------------------------------------------------------------ |
+| $(1)\space\space pre(u) < pre(v)<post(u)< post(v)$    | This is not possible considering the process how DFS examines the edges |
+| $(2)\space\space pre(u) < pre(v) < post(v) < post(u)$ | Tree edge or forward edge                                    |
+| $(3)\space\space pre(v) < pre(u) < post(u) < post(v)$ | Back edge                                                    |
+| $(4)\space\space pre(v) < post(v) < pre(u) < post(u)$ | Cross edge                                                   |
+| $(5)\space space pre(u) < post(u) < pre(v) < post(v)$ | Not possible                                                 |
+
+$(1) \quad \stackrel{\huge u}{|----------|}$                              $(2) \quad \stackrel{\huge u}{|----------|}$
+				          	$\stackrel{\huge v}{|----------|}$ 	                       	$\stackrel{\huge v}{|----|}$
+
+$(3) \quad \stackrel{\huge v}{|----------|}$                              $(4) \quad \stackrel{\huge v}{|----------|}$ $\quad \stackrel{\huge u}{|----------|} $                                                                                                                     				 	$\stackrel{\huge u}{|----|}$
+
+$(5) \quad \stackrel{\huge u}{|----------|}$ $\quad \stackrel{\huge v}{|----------|}$
 
 **Remark:** $\nexists$ back edge $\Leftrightarrow$ $\nexists$ closed walk (cycle)
 
