@@ -1,3 +1,5 @@
+[TOC]
+
 # Abstract Data Types (ADTs)
 
 ## Stack
@@ -144,6 +146,46 @@ union(u, v):
 - `make(V)` $\in \mathcal{O}(|V|)$
 - `same(u, v)` $\in \mathcal{O}(1)$
 - `union(u, v)` $\in \mathcal{O}(|ZHK(u)|)$
+
+## Weighted Quick-Union
+
+```java
+class UnionFind {
+    int[] id;
+    int[] size;
+        
+    public UnionFind(int N) {
+        create(N);
+    }
+    
+    void create(int N) {
+        id = new int[N];
+        for (int i = 0; i < N; ++i) {
+            id[i] = i;
+            size[i] = 1;
+        }
+    }
+    
+    private int root(int i) {
+        while (i != id[i]) {
+            id[i] = id[id[i]];
+            i = id[i];
+        }
+        return i;
+    }
+    
+    public int find(int x, int y) {
+        return root(x) == root(y);
+    }
+    
+    public void union(int x, int y) {
+        if (size[x] < size[y]) { id[x] = y; size[y] += size[x]; }
+        else { id[y] = x; size[x] += size[y]; }
+    }
+}
+```
+
+
 
 ## AVL Trees
 
